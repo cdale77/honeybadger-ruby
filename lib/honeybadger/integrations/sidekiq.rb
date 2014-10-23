@@ -30,7 +30,12 @@ module Honeybadger
 
     injection do
       ::Sidekiq.configure_server do |config|
-        config.error_handlers << Proc.new {|ex,context| Honeybadger.notify_or_ignore(ex, :parameters => context) }
+        config.error_handlers << Proc.new do |ex,context| 
+                                   # Ignore errors below the configured threshold
+                                   threshold = ::Honeybadger.configuration.sidekiq_job_attempt_threshold.to_i || 0
+                                   retry_count = parameters['retry_count'].to_i || 0
+                                   Honeybadger.notify_or_ignore(ex, :parameters => context) if retry_count > threshold
+                                 end
       end
     end
   end
