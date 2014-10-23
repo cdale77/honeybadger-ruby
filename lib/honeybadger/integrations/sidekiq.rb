@@ -32,9 +32,11 @@ module Honeybadger
       ::Sidekiq.configure_server do |config|
         config.error_handlers << Proc.new do |ex,context| 
                                    # Ignore errors below the configured threshold
-                                   threshold = ::Honeybadger.configuration.sidekiq_job_attempt_threshold.to_i || 0
-                                   retry_count = context['retry_count'].to_i || 0
-                                   Honeybadger.notify_or_ignore(ex, :parameters => context) if retry_count > threshold
+                                   # retry_count is zero-indexed, with a nil value
+                                   # on the first retry
+                                   threshold = ::Honeybadger.configuration.sidekiq_job_attempt_threshold.to_i || -1
+                                   retry_count = context['retry_count'].to_i || -1
+                                   Honeybadger.notify_or_ignore(ex, :parameters => context) if retry_count >= threshold
                                  end
       end
     end

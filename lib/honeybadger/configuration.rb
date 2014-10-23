@@ -139,7 +139,8 @@ module Honeybadger
     # Do not notify unless Delayed Job attempts reaches or exceeds this value
     attr_accessor :delayed_job_attempt_threshold
 
-    # Do not notify unless Sidekiq job attempts reaches or exceeds this value 
+    # Do not notify unless Sidekiq job attempts reaches or exceeds this value.
+    # Zero-indexed! setting this to 0 will supress errors on the first attempt. 
     attr_accessor :sidekiq_job_attempt_threshold
 
     DEFAULT_PARAMS_FILTERS = %w(password password_confirmation).freeze
@@ -209,7 +210,7 @@ module Honeybadger
       @trace_threshold               = 2000
       @unwrap_exceptions             = true
       @delayed_job_attempt_threshold = 0
-      @sidekiq_job_attempt_threshold = 0
+      @sidekiq_job_attempt_threshold = -1 # sidekiq job counting is zero-indexed
     end
 
     # Public: Takes a block and adds it to the list of backtrace filters. When

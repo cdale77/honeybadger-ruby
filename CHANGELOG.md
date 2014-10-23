@@ -1,6 +1,6 @@
 ## Honeybadger 1.16.5 ##
 
-* Add `sidekiq_job_attempt_threshold` configuration variable. 
+* Add `sidekiq_job_attempt_threshold` configuration variable with 0 index.
 
   *Brad Johnson*
   
